@@ -1,5 +1,12 @@
 # Architecture Report for Digantara SRE 2 Assessment
 
+## Environment Setup and Learning Curve
+
+- I had no prior hands-on experience with Gitea, Authelia, Grafana, or Nginx.
+- Initially launched a `t2.micro` EC2 instance, but it failed to support multiple containers due to limited resources. After analysis, I upgraded to a `t3.small` instance which resolved the container crash issue.
+- Spent time understanding the role of reverse proxies, cookie-based session management, and SSO headers to integrate Authelia with Gitea and Grafana.
+- Faced numerous technical hurdles but overcame them by reading documentation, debugging logs, and experimenting iteratively.
+
 ##  Decisions Made
 
 -  Chose **Nginx** as the reverse proxy for compatibility with **Authelia**
