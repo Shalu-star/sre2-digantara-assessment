@@ -7,7 +7,7 @@ data "aws_vpc" "default" {
 }
 
 resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
+  name        = "allow_ssh_for_sre_vm"
   description = "Allow SSH from anywhere"
   vpc_id      = data.aws_vpc.default.id
 
@@ -43,13 +43,13 @@ ingress {
 
 resource "aws_instance" "sre_vm" {
   ami           = "ami-0e35ddab05955cf57"  # Ubuntu 22.04 LTS in ap-south-1
-  instance_type = "t2.micro"
+  instance_type = "t3.small"
   key_name      = "sre2-key"
 
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
 
   tags = {
-    Name = "sre2-digantara-asses-vm"
+    Name = "sre-digantara-vm"
   }
 
   provisioner "remote-exec" {
