@@ -1,0 +1,83 @@
+theme: dark
+
+identity_validation:
+  reset_password:
+    jwt_secret: "ZQIySljHcY+2YeSkioUgZA94PBz5BxGnoM7YfjB3KDo="
+
+server:
+  address: tcp://0.0.0.0:9091
+
+log:
+  level: debug
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+
+access_control:
+  default_policy: deny
+  rules:
+    # Existing rules for Authelia API endpoints (leave as is if working)
+    - domain: ["15.206.165.52"]
+      policy: bypass
+      resources:
+        - "^/api/state$"
+        - "^/api/configuration$"
+        - "^/api/settings$"
+        - "^/api/firstfactor$" # Ensure this is here and working
+        - "^/api/consent$"
+        - "^/api/logout$"
+        - "^/api/secondfactor.*$"
+        - "^/api/.*identity.*$"
+        - "^/api/reset.*$"
+        - "^/api/.*totp.*$"
+
+    # Rule for Authelia's verify endpoint (used by Nginx auth_request)
+    # This should be one_factor as Nginx will send the request with the session cookie.
+    - domain: ["15.206.165.52"]
+      policy: one_factor
+      resources:
+        - "^/api/verify$"
+
+    # NEW/MODIFIED: Rule for Gitea access
+    # Allows "admins" group (which 'shalu' is a part of) one-factor access to Gitea.
+    - domain: ["15.206.165.52"]
+      policy: one_factor
+      subject:
+        - "group:admins"
+      resources:
+        # Matches /gitea/ and anything under it (e.g., /gitea/repo)
+        - "^/gitea(/.*)?$" 
+
+    # NEW/MODIFIED: Rule for Grafana access
+    # Allows "admins" group one-factor access to Grafana.
+    - domain: ["15.206.165.52"]
+      policy: one_factor
+      subject:
+        - "group:admins"
+      resources:
+        # Matches /grafana/ and anything under it (e.g., /grafana/dashboard)
+        - "^/grafana/*.*$"
+
+session:
+  name: authelia_session
+  secret: "RPqly00NndXccuXVOg+cDeOe+34UnZGqsI98vJbzdds="
+  expiration: 3600
+  inactivity: 300
+  cookies:
+    - name: authelia_session
+      domain: 15.206.165.52
+      authelia_url: https://15.206.165.52/authelia
+      default_redirection_url: https://15.206.165.52/
+      same_site: lax
+      expiration: 3600
+      inactivity: 300
+
+storage:
+  encryption_key: "QHjGO6R6CoddgJSmKsStOHODwQUbubLO"
+  local:
+    path: /config/db.sqlite3
+
+notifier:
+  filesystem:
+    filename: /config/notification.txt

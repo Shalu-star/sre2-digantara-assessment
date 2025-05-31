@@ -1,0 +1,7 @@
+users:
+  shalu:
+    displayname: "Shalu"
+    password: "$argon2id$v=19$m=65536,t=3,p=4$0fuMN75X4BV/Z4wYUS1siQ$WMY3hYUM26KA3JpqJniwFeC5lKLcbIs0rpqW12WhJZM"
+    email: shalu@example.com
+    groups:
+      - admins
