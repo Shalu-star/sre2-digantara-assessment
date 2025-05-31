@@ -1,33 +1,13 @@
-# Ignore Docker volumes/data
-gitea/gitea/data/
-gitea/gitea/log/
-gitea/gitea/ssh/
-
-grafana/  # ignore entire grafana folder if you only use it for persistent data
-
-# SQLite DB and Authelia runtime files
+# Ignore sensitive files
 authelia/config/db.sqlite3
 authelia/config/notification.txt
-
-# Ignore certificates and private keys
+gitea/gitea/gitea.db
+grafana/
 ssl/
-*.pem
-*.key
 
-# Ignore editor config files
+# Editor & OS files
 .vscode/
-*.code-workspace
-
-# OS/system specific
+.idea/
+*.swp
 .DS_Store
-Thumbs.db
-
-# Python or Terraform related cache
-__pycache__/
-*.tfstate
-*.tfstate.backup
-.terraform/
-
-
-grafana/*
-!grafana/grafana.ini
+*.log
