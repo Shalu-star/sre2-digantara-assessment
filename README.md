@@ -17,6 +17,8 @@
 - Reverse proxy routing via Nginx
 - SSO login using Authelia as the identity provider
 - Fully containerized using Docker Compose
+- Successful login and access to Grafana dashboard
+- Gitea protected by Authelia and redirected to Explore page after login
 
 ---
 
@@ -87,7 +89,15 @@ Nginx acts as a reverse proxy and handles all HTTPS requests. It routes requests
 
 ---
 
+## Final Result
+
+- **Grafana**: Authenticated user (`shalu`) is able to access the full dashboard interface after login.
+- **Gitea**: After login via Authelia, users are redirected to the **Explore** page (public view); Gitea’s internal login is disabled as per SSO flow.
+- The SSO redirection, cookie validation, and header forwarding all work as intended.
+
+---
+
 ## Known Limitations
 
-- Gitea and Grafana still expose their native login UIs
-- Direct login to Gitea/Grafana using username/password fails (as intended); access is expected only via SSO flow through Authelia
+- Native login UIs for Gitea and Grafana still appear but are bypassed via Authelia SSO flow.
+- Username/password login is **intentionally rejected** on these UIs; access is controlled by Authelia.

@@ -7,14 +7,14 @@
 - Spent time understanding the role of reverse proxies, cookie-based session management, and SSO headers to integrate Authelia with Gitea and Grafana.
 - Faced numerous technical hurdles but overcame them by reading documentation, debugging logs, and experimenting iteratively.
 
-##  Decisions Made
+## Decisions Made
 
--  Chose **Nginx** as the reverse proxy for compatibility with **Authelia**
--  Used **Docker Compose** for orchestration of services
--  Configured **SSO** using Authelia and `X-Remote-User` headers
--  Setup protected routes and redirection logic for **Gitea** and **Grafana**
+- Chose **Nginx** as the reverse proxy for compatibility with **Authelia**
+- Used **Docker Compose** for orchestration of services
+- Configured **SSO** using Authelia and `X-Remote-User` headers
+- Setup protected routes and redirection logic for **Gitea** and **Grafana**
 
-##  Challenges Faced
+## Challenges Faced
 
 - Cookie domain mismatch issues with Authelia (fixed with correct session config)
 - **Grafana** permission errors due to volume ownership (resolved using UID `472`)
@@ -29,6 +29,8 @@
 
 All services successfully run and are accessible via:
 
-- Nginx routes to Gitea and Grafana
-- Authelia provides a login page and protects access
-- After login, users are routed correctly, although Gitea/Grafana login forms remain visible (as expected for this setup)
+- Nginx routes to **Gitea** (`/gitea`) and **Grafana** (`/grafana`)
+- **Authelia** protects access via login screen (`shalu` / `MyNewPass@123`)
+- Post-login behavior:
+  - Access to **Grafana dashboard** as user `shalu` is working and visible
+  - **Gitea** explore page is reachable
