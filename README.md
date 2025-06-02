@@ -1,36 +1,45 @@
-# Digantara SRE 2 Assessment – Self-Hosted Gitea & Grafana with SSO via Authelia
+# Digantara SRE 2 Assessment – Self-Hosted Gitea & Grafana with SSO via Authelia (Deployed on AWS EC2)
 
 ## Services Used
 
-- **Gitea** – Git repository management
-- **Grafana** – Monitoring and dashboards
-- **Authelia** – Single Sign-On (SSO) authentication
-- **Nginx** – Reverse proxy
-- **Docker** – Container orchestration
-- **Terraform** – (Optional) Infrastructure provisioning
+- **Gitea** – Git repository management  
+- **Grafana** – Monitoring and dashboards  
+- **Authelia** – Single Sign-On (SSO) authentication  
+- **Nginx** – Reverse proxy  
+- **Docker** – Container orchestration  
+- **Terraform** – Infrastructure provisioning on AWS EC2  
 
 ---
 
 ## Features
 
-- Secure access to Gitea and Grafana using Authelia
-- Reverse proxy routing via Nginx
-- SSO login using Authelia as the identity provider
-- Fully containerized using Docker Compose
-- Successful login and access to Grafana dashboard
-- Gitea protected by Authelia and redirected to Explore page after login
+- Secure access to Gitea and Grafana via Authelia-based SSO  
+- Reverse proxy routing handled by Nginx  
+- AWS EC2 hosting via Terraform (`terraform/main.tf`)  
+- Docker Compose-based container setup for all services  
+- TLS (HTTPS) enabled using self-signed certificates  
 
 ---
 
-## Access Credentials
+## Hosting on AWS EC2 via Terraform
 
-Authelia User:
-- **Username**: `shalu`
-- **Password**: `MyNewPass@123`
+To provision an EC2 instance and automatically install Docker:
 
+1. Ensure AWS credentials are configured locally using `aws configure`.
+2. Update the `key_name` and `private_key` path in `terraform/main.tf`.
+3. Navigate to the `terraform` directory and run:
+
+```bash
+terraform init
+terraform plan
+terraform apply
+
+Once the instance is ready, connect:
+
+ssh -i ~/.ssh/<your-key>.pem ubuntu@<ec2-public-ip>
+```
 ---
-
-## Deployment Instructions
+## Setup Instructions on EC2
 
 ```bash
 # Clone the repo
@@ -45,19 +54,35 @@ sudo chown -R ubuntu:ubuntu gitea
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout ssl/privkey.pem \
   -out ssl/fullchain.pem \
-  -subj "/CN=3.110.86.116"  # CN = public IP of the EC2 instance
+  -subj "/CN=<ec2-public-ip>" 
 
 # Start all services
 docker-compose up -d
 ```
-
 ---
 
 ## Access URLs
 
-- https://3.110.86.116/
-- https://3.110.86.116/gitea/
-- https://3.110.86.116/grafana/
+- https://<ec2-public-ip>/ → Authelia Login
+- https://<ec2-public-ip>/gitea/ → Gitea
+- https://<ec2-public-ip>/grafana/ → Grafana
+
+---
+
+## Auth Credentials
+
+Defined in authelia/config/users_database.yml:
+
+users:
+  shalu:
+    displayname: "Shalu"
+    password: <argon2id-hash>
+    email: shalu@example.com
+    groups:
+      - admins
+
+To generate password hash for users:
+docker run --rm authelia/authelia authelia crypto hash generate bcrypt --password <your password> --no-confirm
 
 ---
 
@@ -84,8 +109,9 @@ Nginx acts as a reverse proxy and handles all HTTPS requests. It routes requests
 - `authelia/config/configuration.yml`
 - `authelia/config/users_database.yml`
 - `nginx/nginx.conf`
-- `gitea/gitea/conf/app.ini`
+- `gitea/gitea/conf/app.ini` - (SECRET/ACCESS tokens via openssl rand -hex 32)
 - `docker-compose.yml`
+- `terraform/main.tf`
 
 ---
 

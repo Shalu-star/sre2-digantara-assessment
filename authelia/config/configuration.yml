@@ -18,7 +18,7 @@ access_control:
   default_policy: deny
   rules:
     # Existing rules for Authelia API endpoints (leave as is if working)
-    - domain: ["3.110.86.116"]
+    - domain: ["<ec2-public-ip>"]
       policy: bypass
       resources:
         - "^/api/state$"
@@ -34,14 +34,14 @@ access_control:
 
     # Rule for Authelia's verify endpoint (used by Nginx auth_request)
     # This should be one_factor as Nginx will send the request with the session cookie.
-    - domain: ["3.110.86.116"]
+    - domain: ["<ec2-public-ip>"]
       policy: one_factor
       resources:
         - "^/api/verify$"
 
     # NEW/MODIFIED: Rule for Gitea access
     # Allows "admins" group (which 'shalu' is a part of) one-factor access to Gitea.
-    - domain: ["3.110.86.116"]
+    - domain: ["<ec2-public-ip>"]
       policy: one_factor
       subject:
         - "group:admins"
@@ -51,7 +51,7 @@ access_control:
 
     # NEW/MODIFIED: Rule for Grafana access
     # Allows "admins" group one-factor access to Grafana.
-    - domain: ["3.110.86.116"]
+    - domain: ["<ec2-public-ip>"]
       policy: one_factor
       subject:
         - "group:admins"
@@ -66,9 +66,9 @@ session:
   inactivity: 300
   cookies:
     - name: authelia_session
-      domain: 3.110.86.116
-      authelia_url: https://3.110.86.116/authelia
-      default_redirection_url: https://3.110.86.116/
+      domain: <ec2-public-ip>
+      authelia_url: https://<ec2-public-ip>/authelia
+      default_redirection_url: https://<ec2-public-ip>/
       same_site: lax
       expiration: 3600
       inactivity: 300
