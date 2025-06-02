@@ -94,6 +94,8 @@ Nginx acts as a reverse proxy and handles all HTTPS requests. It routes requests
 - `/grafana/` → Grafana container
 - `/authelia/` → Authelia login and APIs
 
+---
+
 ### Auth Flow:
 
 1. User visits a protected route (e.g., `/grafana/`)
